@@ -1,6 +1,26 @@
-import React from 'react';
+import React, {useState} from 'react';
+import Dropdown from "@/Components/Dropdown";
+import InputError from "@/Components/InputError";
+import PrimaryButton from "@/Components/PrimaryButton";
+import {useForm, usePage} from "@inertiajs/react";
 
 export default function Chirp({ chirp }) {
+  const {auth} = usePage().props;
+
+  const [editing, setEditing] = useState(false);
+
+  const {data, setData, patch, clearErrors, reset, errors} = useForm({
+    message: chirp.message,
+  });
+
+  const submit = (e) => {
+    e.preventDefault();
+    patch(route('chirps.update', chirp.id), {onSuccess: () => setEditing(false)});
+  }
+
+
+
+
   return (
     <div className="p-6 flex space-x-2">
       <svg 
@@ -49,11 +69,96 @@ export default function Chirp({ chirp }) {
               <small className="ml-2 text-sm text-grey-600">
                 {new Date(chirp.created_at).toLocaleString()}
               </small>
+              {chirp.created_at !== chirp.updated_at && 
+              <small className="text-sm text-grey-600">&middot; edited</small>
+              }
             </div>
+            {chirp.user.id === auth.user.id &&
+              <Dropdown>
+                <Dropdown.Trigger>
+                  <button>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-grey-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                      <path d="M6 
+                              10a2 
+                              2 
+                              0 
+                              11-4 
+                              0 
+                              2 
+                              2 
+                              0 
+                              014 
+                              0zM12 
+                              10a2
+                               2 
+                              0 
+                              11-4 
+                              0 
+                              2 
+                              2 
+                              0 
+                              014 
+                              0zM16 
+                              12a2 
+                              2 
+                              0 
+                              100-4 
+                              2 
+                              2 
+                              0 
+                              000 
+                              4z" />
+                    </svg>
+                  </button>
+                </Dropdown.Trigger>
+                <Dropdown.Content>
+                  <button 
+                    className="block 
+                                w-full 
+                                px-4 
+                                py-2
+                                text-left
+                                text-sm
+                                leading-5
+                                text-grey-700
+                                hover:bg-grey-100
+                                transition
+                                duration-150
+                                ease-in-out 
+                                "
+                    onClick={() => setEditing(true)}>
+                      Edit
+                    </button>
+                </Dropdown.Content>
+              </Dropdown>
+            }
           </div>
-          <p className="mt-4 text-lg text-grey-900">
-            {chirp.message}
-          </p>
+          {editing
+            ? <form onSubmit={submit}>
+                <textarea 
+                  value={data.message} 
+                  onChange={e => setData('message', e.target.value)} 
+                  className="mt-4 
+                              w-full 
+                              text-gray-900 
+                              border-gray-300 
+                              focus:border-indigo-300 
+                              focus:ring 
+                              focus:ring-indigo-200 
+                              focus:ring-opacity-50 
+                              rounded-md 
+                              shadow-sm"
+                ></textarea>
+              </form>
+            : 
+            <p className="mt-4 text-lg text-grey-900">
+              {chirp.message}
+            </p>
+          }
         </div>
     </div>
   );
