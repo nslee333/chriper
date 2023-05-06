@@ -153,6 +153,11 @@ export default function Chirp({ chirp }) {
                               rounded-md 
                               shadow-sm"
                 ></textarea>
+                <InputError message={errors.message} className="mt-2" />
+                <div className="space-x-2">
+                  <PrimaryButton className="mt-4">Save</PrimaryButton>
+                  <button className="mt-4" onClick={() => {setEditing(false); reset(); clearErrors();}}>Cancel</button>
+                </div>
               </form>
             : 
             <p className="mt-4 text-lg text-grey-900">
