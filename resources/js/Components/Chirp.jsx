@@ -14,7 +14,7 @@ export default function Chirp({ chirp }) {
         stroke="currentColor"
         strokeWidth="2">
           <path 
-            strokeLineCap="round"
+            strokeLinecap="round"
             strokeLinejoin="round"
             d="M8 
                 12h.01M12 
